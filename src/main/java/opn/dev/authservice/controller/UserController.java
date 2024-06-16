@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import opn.dev.authservice.dao.User;
-import opn.dev.authservice.service.UserService;
+import opn.dev.authservice.service.imp.UserServiceImp;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
+    private UserServiceImp userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImp userService) {
         this.userService = userService;
     }
 

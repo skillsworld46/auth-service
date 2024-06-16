@@ -1,22 +1,37 @@
 package opn.dev.authservice.dao;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 @OptimisticLocking(type = OptimisticLockType.VERSION)
-public class User {
+public class User implements UserDetails {
 
     @Id
     @Column(unique = true, nullable = false, length = 150)
@@ -28,12 +43,17 @@ public class User {
     @Column(unique = true, nullable = false, length = 255)
     private String email;
 
-    @Column(nullable = false)
-    private String salt;
+    private String firstName;
+    private String lastName;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Builder.Default
     @Column(name = "account_locked", nullable = false)
     private Boolean accountLocked = false;
 
+    @Builder.Default
     @Column(name = "failed_attempts", nullable = false)
     private Integer failedAttempts = 0;
 
@@ -54,6 +74,7 @@ public class User {
     @Column(name = "updated_by", nullable = false, length = 150)
     private String updatedBy;
 
+    @Builder.Default
     @Version
     @Column(name = "row_version", nullable = false)
     private Long rowVersion = 0L;
@@ -80,14 +101,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     public Boolean getAccountLocked() {
@@ -152,6 +165,17 @@ public class User {
 
     public void setRowVersion(Long rowVersion) {
         this.rowVersion = rowVersion;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
     }
 
 }

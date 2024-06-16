@@ -6,58 +6,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+import opn.dev.authservice.dto.JwtAuthenticationRsp;
+import opn.dev.authservice.dto.SignInReq;
+import opn.dev.authservice.dto.SignUpReq;
 import opn.dev.authservice.service.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private AuthenticationService authenticationService;
 
-    public AuthController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    @PostMapping("/signup")
+    public ResponseEntity<JwtAuthenticationRsp> signup(@RequestBody SignUpReq request) {
+        return ResponseEntity.ok(authenticationService.signup(request));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        try {
-            String token = authenticationService.authenticate(request.getUsername(), request.getPassword());
-            return ResponseEntity.ok(new AuthenticationResponse(token));
-        } catch (Exception e) {
-            return ResponseEntity.status(401).body(e.getMessage());
-        }
-    }
-}
-
-class LoginRequest {
-    private String username;
-    private String password;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-}
-
-class AuthenticationResponse {
-    private String jwt;
-
-    public AuthenticationResponse(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public String getJwt() {
-        return jwt;
+    @PostMapping("/signin")
+    public ResponseEntity<JwtAuthenticationRsp> signin(@RequestBody SignInReq request) {
+        return ResponseEntity.ok(authenticationService.signin(request));
     }
 }
