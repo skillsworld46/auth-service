@@ -17,7 +17,7 @@ import opn.dev.authservice.service.AuthenticationService;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/signup")
     public ResponseEntity<JwtAuthenticationRsp> signup(@RequestBody SignUpReq request) {
