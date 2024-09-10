@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import opn.dev.authservice.dao.User;
+import opn.dev.authservice.entity.User;
 import opn.dev.authservice.repository.UserRepository;
 import opn.dev.authservice.service.UserService;
 
@@ -27,15 +27,25 @@ public class UserServiceImp implements UserService {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setEmail(email);
-        newUser.setPasswordHash(hashedPassword);
+        newUser.setPassword(hashedPassword);
         newUser.setCreatedBy(createdBy);
         newUser.setUpdatedBy(createdBy);
 
         return userRepository.save(newUser);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User findByUsername(String username) {
         return userRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String identity) throws UsernameNotFoundException {
+        User u = userRepository.findById(identity)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (u != null) {
+            return u;
+        }
+        return userRepository.findByEmail(identity)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }
