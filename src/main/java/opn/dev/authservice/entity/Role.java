@@ -1,4 +1,4 @@
-package opn.dev.authservice.dao;
+package opn.dev.authservice.entity;
 
 public enum Role {
     USER,

@@ -1,4 +1,4 @@
-package opn.dev.authservice.dao;
+package opn.dev.authservice.entity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -37,8 +37,8 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false, length = 150)
     private String username;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(unique = true, nullable = false, length = 255)
     private String email;
@@ -85,14 +85,6 @@ public class User implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
     }
 
     public String getEmail() {
@@ -174,8 +166,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
+        return this.password;
     }
 
 }
